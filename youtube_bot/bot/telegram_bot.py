@@ -1,3 +1,4 @@
+from services.transcript_service import fetch_transcript
 from utils.youtube_utils import is_youtube_url, extract_video_id
 from telegram import Update
 from telegram.ext import (
@@ -38,7 +39,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
     Handles incoming text messages.
-    Detects YouTube links and extracts video ID.
+    Detects YouTube links and fetches transcript.
     """
     message_text = update.message.text.strip()
 
@@ -52,9 +53,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         await update.message.reply_text(
-            "🎥 YouTube video detected!\n"
-            f"📌 Video ID: {video_id}\n\n"
-            "⏳ Transcript fetching coming next..."
+            "🎥 YouTube video detected!\n⏳ Fetching transcript..."
+        )
+
+        transcript = fetch_transcript(video_id)
+
+        if not transcript:
+            await update.message.reply_text(
+                "❌ Transcript could not be retrieved for this video. This may be due to YouTube restrictions."
+            )
+            return
+
+        await update.message.reply_text(
+            "✅ Transcript fetched successfully!\n\n"
+            f"📄 Transcript length: {len(transcript)} characters\n\n"
+            "🧠 Ready to summarize next!"
         )
 
     else:

@@ -152,9 +152,6 @@ A short demo video (3–5 minutes) demonstrates:
 - Telegram interaction  
 - YouTube link handling  
 - Graceful transcript failure handling  
-
-📸 Screenshots included in submission.
-
 ---
 
 ## 🏁 Conclusion

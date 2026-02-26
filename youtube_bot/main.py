@@ -1,6 +1,6 @@
 # youtube_bot/main.py
 
-from bot.telegram_bot import start_bot
+from youtube_bot.bot.telegram_bot import start_bot
 
 
 def main():

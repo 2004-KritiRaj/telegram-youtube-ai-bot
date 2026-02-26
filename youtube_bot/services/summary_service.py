@@ -1,8 +1,7 @@
 # youtube_bot/services/summary_service.py
 
 from typing import Dict, List
-from utils.text_utils import clean_transcript, chunk_text
-
+from youtube_bot.utils.text_utils import clean_transcript, chunk_text
 
 def generate_summary(transcript: str) -> Dict[str, List[str] | str]:
     """

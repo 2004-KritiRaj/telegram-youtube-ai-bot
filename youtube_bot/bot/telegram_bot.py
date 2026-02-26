@@ -1,5 +1,6 @@
-from services.transcript_service import fetch_transcript
-from utils.youtube_utils import is_youtube_url, extract_video_id
+from youtube_bot.services.summary_service import generate_summary
+from youtube_bot.services.transcript_service import fetch_transcript
+from youtube_bot.utils.youtube_utils import is_youtube_url, extract_video_id
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -64,11 +65,30 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
 
+        summary = generate_summary(transcript)
+
+        # Format summary for Telegram
+        response = "🎥 *Video Summary*\n\n"
+
+        # Key Points
+        response += "📌 *Key Points*\n"
+        for idx, point in enumerate(summary["key_points"], start=1):
+            response += f"{idx}. {point}\n"
+
+        # Timestamps
+        response += "\n⏱ *Important Timestamps*\n"
+        for ts in summary["timestamps"]:
+            response += f"• {ts}\n"
+
+        # Takeaway
+        response += "\n🧠 *Core Takeaway*\n"
+        response += summary["takeaway"]
+
         await update.message.reply_text(
-            "✅ Transcript fetched successfully!\n\n"
-            f"📄 Transcript length: {len(transcript)} characters\n\n"
-            "🧠 Ready to summarize next!"
+            response,
+            parse_mode="Markdown"
         )
+       
 
     else:
         await update.message.reply_text(
